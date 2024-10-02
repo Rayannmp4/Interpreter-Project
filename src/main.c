@@ -3,32 +3,21 @@
 #include <stdbool.h>
 #include <string.h>
 #include "types.h"
-
-
-int get_result( Token * temp ) {
-    int a = temp->my_token.number ; 
-    temp = temp->next; 
-    char op = temp->my_token.op ; 
-    temp = temp->next ; 
-    int b = temp->my_token.number; 
-    switch (op) {
-        case '+' : 
-        return a + b ; 
-        break;
-    }
-    return 0 ; 
-}
+#include "interpret.h"
 
 int main () {
+    // valeur d'entrée temp
     char calcul[20]; 
     printf("give us an operation : "); 
     fgets(calcul , 20 , stdin); 
     printf("this %s \n", calcul); 
 
+    // initialiser le nom de la variable à 'vide'
     char * variable = malloc(sizeof(char)*20) ;
     variable[0] = '\0'; 
     int i = 0 ; 
-
+   
+    // parcourir jusqu'au premier espace
     while (calcul [i] != ' ' && calcul [i] != '\0') {
     char temp[2]; 
     temp[0] = calcul [i]; 
@@ -37,46 +26,41 @@ int main () {
     i++; 
     }
     
-    
+    // ignorer les espaces 
     while (calcul[i] == '=' || calcul[i] == ' ') {
     i++; 
     }
 
-    //Token * h = NULL ; 
-    //Token * t = NULL ;
+    // créer le token de int 1
+    Token *head = add_token_number (NULL , calcul[i]); 
+    Token * tail = head ; 
 
-    Token *token = malloc(sizeof(Token)); 
-    token->type = NUMBER ; 
-    token->my_token.number = calcul[i] - '0'; 
-    token->next = NULL ; 
-    Token *head = token ; 
+    // ignorer les espaces 
     i++ ; 
-    while ( calcul[i] == ' ' ) {
+    while ( calcul[i] == ' ' || calcul[i] == '=') {
     i++; 
     }
     
-    token->next = malloc(sizeof(Token)); 
-    token->next->type = OPERATOR ; 
-    token->next->my_token.op = calcul[i] ; 
-    token = token->next ; 
-    token->next = NULL ; 
-    
+    // ajouter le token de int 2
+    tail = add_token_operator (tail , calcul[i]); 
+
+    // ignorer les espaces 
     i++ ;
     while ( calcul[i] == ' ') {
     i++; 
     }
     
-    token->next = malloc(sizeof(Token)); 
-    token->next->type = NUMBER ; 
-    token->next->my_token.number = calcul[i] - '0'; 
-    token = token->next ; 
-    token->next = NULL ;
-
+    // ajouter le token de int 2
+    tail = add_token_number (tail , calcul[i]);
+    
+    // calculer 
     int nb = get_result(head); 
 
+    // afficher le resultat 
     printf("this %s = %d \n ", variable, nb); 
     free(variable); 
-
+    
+    // free des malloc 
     while (head != NULL) {
         Token *next = head->next;
         free(head);
