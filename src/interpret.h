@@ -37,7 +37,7 @@ int get_result( Token * temp ) {
 Token * add_token_number (Token * head , char num ) {
     Token * token = (Token *) malloc (sizeof(Token)); 
     token->type = NUMBER ; 
-    token->my_token.number = num - '0'; 
+    token->my_token.number = num ; 
     token->next = NULL ; 
     if (head == NULL) {
     return token ; 
@@ -55,7 +55,6 @@ Token * add_token_operator (Token * head , char op ) {
     if (head == NULL) {
     return token ; 
     } else {
-    printf("ok"); 
     head->next = token ; 
     return token ; 
     }
