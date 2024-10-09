@@ -5,19 +5,32 @@
 #include <ctype.h>
 #include "types.h"
 #include "lexer.h"
+#include "save.h"
+#include "read.h"
 
 int main () {
     while (true) {
     // valeur d'entrée temp
     char calcul[50]; 
     printf("give us an operation : "); 
-    fgets(calcul , 50 , stdin); 
-    printf("this %s \n", calcul); 
+    fgets(calcul , 50 , stdin);
+    char* print = "print(";
+    int v = 1;
+    for(int i = 0; i < 6; i++){
+        if(calcul[i] != print[i]){
+            v = 0;
+        }
+    }
+    if(v == 1){
+        read(calcul);
+        return 1;
+    }
+    printf("this %s \n", calcul);
 
     // initialiser le nom de la variable à 'vide'
     char * variable = malloc(sizeof(char)*20) ;
-    variable[0] = '\0'; 
-    int i = 0 ; 
+    variable[0] = '\0';
+    int i = 0 ;
    
     while (calcul[i] == '=' || calcul[i] == ' ') {
     i++; 
@@ -36,7 +49,9 @@ int main () {
     
     // calculer 
     int result = head->my_token.number ; 
-    get_result(head->next , &result); 
+    get_result(head->next , &result);
+
+    save(variable,result);
 
     // afficher le resultat 
     printf("this %s = %d \n", variable, result); 
@@ -49,7 +64,6 @@ int main () {
         free(head);
 
         head = next;
-    } 
     }
-    return 0 ; 
+    }    return 0 ;
 }

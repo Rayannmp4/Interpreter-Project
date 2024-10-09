@@ -3,7 +3,10 @@
 #include <stdbool.h>
 #include <string.h>
 
+//La variable désigne l'entrée du terminal. Elle est sous le format print(...)
+
 void read(char* variable){
+    //Ouverture ou création du fichier en lecture/écriture
     FILE *f = fopen("data.txt", "a+");
     if (f == NULL)
     {
@@ -12,27 +15,38 @@ void read(char* variable){
     }
     char c;
     rewind(f);
+    //Parcourir le fichier
     while (c != EOF){
-        int i = 0;
+        //initialisation à 6 car la commande est "print(..."
+        //                                              ^ 6eme indexe
+        int i = 6;
+        //recuperation et decalage du curseur jusqu'a ce que c égal la premiere lettre de la variable
         c = fgetc(f);
-        while (c == variable[i+6]){
-            if(variable[i+7] == '\0'){
+        //Cette boucle permet de vérifier que la ligne contient la chaîne 'variable'
+        while (c == variable[i]){
+            //Parceque print(...) ce termine par ')'
+            if(variable[i+1] == ')'){
+                /*On décale à droite car si on cherche 'x' FORMAT DU FICHIER:
+                 * variablotin:4
+                 * variablotron:4
+                 * x:3
+                 *  ^
+                 * */
                 fseek(f, 1, SEEK_CUR);
                 int n;
                 fscanf(f, "%d", &n);
-                printf("\nres = %d", n);
+                //Affichage de l'entier
+                printf("%d", n);
+                return;
             }
+            //Charactères suivants
+            c = fgetc(f);
             i++;
         }
+
     }
-
-    /*fprintf(f, "%d", nb);
-    fseek(f, 1, SEEK_SET);
-    printf("\n%ld", ftell(f));
-
-    int n;
-    fscanf(f, "%d", &n);
-    printf("\nres = %d", n);*/
+    //Fermétire sinn shaa beug
+    fclose(f);
 
 }
 
