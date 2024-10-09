@@ -4,40 +4,48 @@
 #include <string.h>
 #include "types.h"
 
-int get_result( Token * temp ) {
-    int a = temp->my_token.number ; 
-    temp = temp->next; 
+void get_result( Token * temp ,int * result) {
+    if ( temp == NULL || temp -> next == NULL) {
+    return ; 
+    }
+
+    // operateur 
     char op = temp->my_token.op ; 
+    // deuxieme entier 
     temp = temp->next ; 
     int b = temp->my_token.number; 
+
     switch (op) {
         case '+' : 
-        return a + b ; 
+        *result = *result + b ; 
         break;
         case '-' : 
-        return a - b ;
+        *result = *result - b ;
         break; 
         case '/' : 
         if (b != 0) {
-        return a / b ;
+        *result = *result / b ;
         }
         break;
-        case '%' : 
-        if (a >= b) {
-            return a%b ; 
-        } 
+        case '*' : 
+        *result = *result * b ; 
         break;     
         default : 
-        return -1 ;    
+        *result = -1 ;    
+        return ; 
     }
-    return -1 ; 
+    
+    if (temp->next != NULL) {
+        get_result(temp->next , result);
+    } 
+    
 }
 
 
 Token * add_token_number (Token * head , char num ) {
     Token * token = (Token *) malloc (sizeof(Token)); 
     token->type = NUMBER ; 
-    token->my_token.number = num - '0'; 
+    token->my_token.number = num ; 
     token->next = NULL ; 
     if (head == NULL) {
     return token ; 
@@ -55,7 +63,6 @@ Token * add_token_operator (Token * head , char op ) {
     if (head == NULL) {
     return token ; 
     } else {
-    printf("ok"); 
     head->next = token ; 
     return token ; 
     }
