@@ -6,7 +6,7 @@
 #include "interpret.h"
 
 int main () {
-    // valeur d'entrée temp
+ 
     char calcul[20]; 
     printf("give us an operation : "); 
     fgets(calcul , 20 , stdin); 
@@ -28,7 +28,7 @@ int main () {
     
     // ignorer les espaces 
     while (calcul[i] == '=' || calcul[i] == ' ') {
-    i++; 
+        i++; 
     }
 
     // créer le token de int 1
