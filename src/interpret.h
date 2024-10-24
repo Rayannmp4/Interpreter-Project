@@ -60,33 +60,30 @@ char * get_variable (char * calcul ) {
     strcat(variable , temp); 
     i++; 
     }
-    return variable ;
 }
 
-void interpret (char * calcul) {
-    // valeur d'entrée temp
-    //char calcul[50]; 
-    //printf("give us an operation : "); 
-    //fgets(calcul , 50 , stdin); 
-    //printf("this %s \n", calcul); 
-    Token * head = lexer(calcul);
-    char * variable = get_variable(calcul);
-    // calculer 
-    int result = head->my_token.number ; 
-    get_result(head->next , &result); 
-
-    // afficher le resultat 
-    printf("this %s = %d \n", variable, result); 
-    free(variable); 
-
-    
-    // free des malloc 
-    while (head != NULL) {
-        Token *next = head->next;
-        free(head);
-
-        head = next;
-    } 
+Token * add_token_operator (Token * head , char op ) {
+    Token * token = (Token *) malloc (sizeof(Token)); 
+    token->type = OPERATOR ; 
+    token->my_token.op = op ; 
+    token->next = NULL ; 
+    if (head == NULL) {
+    return token ; 
+    } else {
+    head->next = token ; 
+    return token ; 
+    }
 }
 
-#endif 
+Token * add_token_var(Token * head, const char *var_name) {
+    Token * token = (Token *) malloc(sizeof(Token));
+    token->type = TOKEN_VAR;
+    strcpy(token->my_token.var_name, var_name);
+    token->next = NULL;
+    if (head == NULL) {
+        return token;
+    } else {
+        head->next = token;
+        return token;
+    }
+}

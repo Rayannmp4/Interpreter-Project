@@ -16,33 +16,13 @@ bool is_operator ( char c ) {
     return false ; 
 }
 
-Token * add_token_number (Token * head , char num ) {
-    Token * token = (Token *) malloc (sizeof(Token)); 
-    token->type = NUMBER ; 
-    token->my_token.number = num ; 
-    token->next = NULL ; 
-    if (head == NULL) {
-    return token ; 
-    } else {
-    head->next = token ; 
-    return token ; 
-    }
+// Fonction pour vérifier si un caractère est valide pour une variable
+bool is_valid_var_char(char c) {
+    return (isalpha(c) || c == '_');
 }
 
-Token * add_token_operator (Token * head , char op ) {
-    Token * token = (Token *) malloc (sizeof(Token)); 
-    token->type = OPERATOR ; 
-    token->my_token.op = op ; 
-    token->next = NULL ; 
-    if (head == NULL) {
-    return token ; 
-    } else {
-    head->next = token ; 
-    return token ; 
-    }
-}
 
-Token * lexer ( char * operation ) {
+Token * get_operation_list ( char * operation ) {
 
 Token * head = NULL ;
 Token * tail = NULL ; 
@@ -73,11 +53,33 @@ while (operation[i] != '\0') {
                 tail = add_token_number(tail, atoi(first_int)); 
             }
     free(first_int); 
+    continue; // Revenir au début du while
     }
+            // Gérer les variables
+        if (is_valid_var_char(operation[i])) {
+            char var_name[20];
+            int j = 0;
+
+            // Extraire le nom de la variable
+            while (is_valid_var_char(operation[i])) {
+                var_name[j++] = operation[i++];
+            }
+            var_name[j] = '\0';
+
+            // Ajouter un token de type variable
+            if (tail == NULL) {
+                head = add_token_var(NULL, var_name);
+                tail = head;
+            } else {
+                tail = add_token_var(tail, var_name);
+            }
+            continue; // Revenir au début du while
+        }
     if (is_operator(operation[i])) {
     tail = add_token_operator (tail , operation[i]);
-    }
+    
     i++ ; 
+    }
 }
 return head ; 
 }
