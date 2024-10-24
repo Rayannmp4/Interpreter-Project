@@ -3,7 +3,8 @@
 #include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
-#include "interpret.h"
+#include "types.h"
+#include "lexer.h"
 
 Variable variables[100]; // on stocke en max 100 var
 int variable_count = 0;  // compteur pour les var

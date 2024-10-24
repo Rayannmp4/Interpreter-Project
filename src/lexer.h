@@ -1,12 +1,10 @@
-#ifndef LEXER_H
-#define LEXER_H
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
 #include "types.h"
-
+#include "interpret.h"
 
 bool is_operator ( char c ) { 
     if ( c == '+' || c == '-' 
@@ -83,5 +81,3 @@ while (operation[i] != '\0') {
 }
 return head ; 
 }
-
-#endif 
