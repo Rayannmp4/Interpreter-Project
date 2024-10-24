@@ -67,3 +67,16 @@ Token * add_token_operator (Token * head , char op ) {
     return token ; 
     }
 }
+
+Token * add_token_var(Token * head, const char *var_name) {
+    Token * token = (Token *) malloc(sizeof(Token));
+    token->type = TOKEN_VAR;
+    strcpy(token->my_token.var_name, var_name);
+    token->next = NULL;
+    if (head == NULL) {
+        return token;
+    } else {
+        head->next = token;
+        return token;
+    }
+}
