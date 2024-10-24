@@ -1,10 +1,12 @@
+#ifndef LEXER_H
+#define LEXER_H
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
 #include "types.h"
-#include "interpret.h"
+
 
 bool is_operator ( char c ) { 
     if ( c == '+' || c == '-' 
@@ -14,8 +16,33 @@ bool is_operator ( char c ) {
     return false ; 
 }
 
+Token * add_token_number (Token * head , char num ) {
+    Token * token = (Token *) malloc (sizeof(Token)); 
+    token->type = NUMBER ; 
+    token->my_token.number = num ; 
+    token->next = NULL ; 
+    if (head == NULL) {
+    return token ; 
+    } else {
+    head->next = token ; 
+    return token ; 
+    }
+}
 
-Token * get_operation_list ( char * operation ) {
+Token * add_token_operator (Token * head , char op ) {
+    Token * token = (Token *) malloc (sizeof(Token)); 
+    token->type = OPERATOR ; 
+    token->my_token.op = op ; 
+    token->next = NULL ; 
+    if (head == NULL) {
+    return token ; 
+    } else {
+    head->next = token ; 
+    return token ; 
+    }
+}
+
+Token * lexer ( char * operation ) {
 
 Token * head = NULL ;
 Token * tail = NULL ; 
@@ -54,3 +81,5 @@ while (operation[i] != '\0') {
 }
 return head ; 
 }
+
+#endif 
