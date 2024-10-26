@@ -32,6 +32,14 @@ typedef struct{
    int value;
 } Variable;
 
-
+// AST struct 
+typedef struct Node{
+   union {
+   char operator;
+   int value; 
+   } content;
+   struct Node * left;
+   struct Node * right;
+} Node;
 
 #endif
