@@ -1,16 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <string.h>
-#include "types.h"
+#include "save.h"
+#include "read.h"
 #include "lexer.h"
 #include "parser.h"
-#include "save.h"
 
-Variable variables[100]; // on stocke en max 100 variables
+Variable variables[100];
 int variable_count = 0;
 
-// get la valeur de la variable
 int get_val_variable(Variable *variables, int count, const char* name) {
     for (int i = 0; i < count; i++) {
         if (strcmp(variables[i].name, name) == 0) {
@@ -21,7 +19,6 @@ int get_val_variable(Variable *variables, int count, const char* name) {
     return 0;
 }
 
-// Fonction pour mettre à jour ou ajouter une variable
 void set_val_variable(Variable *variables, int *count, const char *name, int value) {
     for (int i = 0; i < *count; i++) {
         if (strcmp(variables[i].name, name) == 0) {
@@ -32,10 +29,20 @@ void set_val_variable(Variable *variables, int *count, const char *name, int val
     strcpy(variables[*count].name, name);
     variables[*count].value = value;
     (*count)++;
+    save(name, value);  // Sauvegarde de la variable
 }
 
-// Fonction pour interpréter une expression
 void interpret(const char* input) {
+    // Vérifiez si la commande est un "print(...)"
+    if (strncmp(input, "print(", 6) == 0 && input[strlen(input) - 1] == ')') {
+        char variable[20];
+        strncpy(variable, input + 6, strlen(input) - 7);
+        variable[strlen(input) - 7] = '\0';  // Terminer la chaîne
+        read(variable);  // Lire et afficher la valeur de la variable
+        printf("\n");
+        return;
+    }
+
     char calcul[50];
     strcpy(calcul, input);
 
@@ -61,21 +68,11 @@ void interpret(const char* input) {
     }
 
     Token *head = lexer(operation);
-    int result = 0;
-    Token *current = head;
-    while (current != NULL) {
-        if (current->type == TOKEN_VAR) {
-            current->my_token.number = get_val_variable(variables, variable_count, current->my_token.var_name);
-        }
-        current = current->next;
-    }
-
-    result = parser(head);
+    int result = parser(head);
 
     if (variable) {
         printf("%s = %d\n", variable, result);
         set_val_variable(variables, &variable_count, variable, result);
-        save(variable, result); // Sauvegarder la variable dans le fichier
         free(variable);
     } else {
         printf("Result = %d\n", result);

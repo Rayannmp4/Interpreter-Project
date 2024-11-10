@@ -1,0 +1,5 @@
+x = 10
+y = x + 5
+print(y)
+z = (y * 2) + 3
+print(z)

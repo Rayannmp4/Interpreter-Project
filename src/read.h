@@ -3,29 +3,31 @@
 #include <stdbool.h>
 #include <string.h>
 
-void read(char* variable) {
-    FILE *f = fopen("data.txt", "a+");
+void read(const char* variable) {
+    // Ouvrir le fichier en mode lecture seule
+    FILE *f = fopen("data.txt", "r");
     if (f == NULL) {
         printf("Error opening file data.txt\n");
         return;
     }
-    char c;
-    rewind(f);
-    while (c != EOF) {
-        int i = 6;
-        c = fgetc(f);
-        while (c == variable[i]) {
-            if (variable[i+1] == ')') {
-                fseek(f, 1, SEEK_CUR);
-                int n;
-                fscanf(f, "%d", &n);
-                printf("%d", n);
-                return;
-            }
-            c = fgetc(f);
-            i++;
+
+    char file_var[20];
+    int value;
+    bool found = false;
+
+    // Parcourir chaque ligne du fichier pour trouver la variable
+    while (fscanf(f, "%19[^:]:%d\n", file_var, &value) == 2) {
+        if (strcmp(file_var, variable) == 0) {
+            printf("%d\n", value);  // Affiche la valeur trouvée
+            found = true;
+            break;
         }
     }
+
+    if (!found) {
+        printf("Variable '%s' not found.\n", variable);
+    }
+
     fclose(f);
 }
 
