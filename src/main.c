@@ -4,6 +4,8 @@
 #include <string.h>
 #include "interpret.h"
 #include "read.h"
+
+// Fonction pour interpréter les instructions d'un fichier
 void interpret_file(const char *filename) {
     FILE *file = fopen(filename, "r");  // Ouvrir le fichier en mode lecture
     if (file == NULL) {
@@ -37,12 +39,12 @@ int main(int argc, char *argv[]) {
             }
 
             if (strncmp(input, "print(", 6) == 0 && input[strlen(input) - 1] == ')') {
-                input[strlen(input) - 1] = '\0';
-                char *variable = input + 6;
-                read(variable);
+                input[strlen(input) - 1] = '\0';  // Supprime la parenthèse fermante
+                char *variable = input + 6;       // Pointeur vers le nom de la variable
+                read(variable);                   // Appeler la fonction read pour afficher la valeur
                 printf("\n");
             } else {
-                interpret(input);
+                interpret(input);  // Interpréter l'entrée utilisateur
             }
         }
     }

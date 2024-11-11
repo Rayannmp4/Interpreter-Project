@@ -12,12 +12,15 @@ int variable_count = 0;
 int get_val_variable(Variable *variables, int count, const char* name) {
     for (int i = 0; i < count; i++) {
         if (strcmp(variables[i].name, name) == 0) {
+            printf("Retrieved value for %s: %d\n", name, variables[i].value);  // Message de débogage
             return variables[i].value;
         }
     }
+
     printf("Error!!! Variable '%s' not found. Value is 0.\n", name);
     return 0;
 }
+
 
 void set_val_variable(Variable *variables, int *count, const char *name, int value) {
     for (int i = 0; i < *count; i++) {
@@ -33,18 +36,20 @@ void set_val_variable(Variable *variables, int *count, const char *name, int val
 }
 
 void interpret(const char* input) {
-    // Vérifiez si la commande est un "print(...)"
-    if (strncmp(input, "print(", 6) == 0 && input[strlen(input) - 1] == ')') {
-        char variable[20];
-        strncpy(variable, input + 6, strlen(input) - 7);
-        variable[strlen(input) - 7] = '\0';  // Terminer la chaîne
-        read(variable);  // Lire et afficher la valeur de la variable
+    // Créez une copie modifiable de `input`
+    char *modifiable_input = strdup(input);  // Copie modifiable de `input`
+
+    if (strncmp(modifiable_input, "print(", 6) == 0 && modifiable_input[strlen(modifiable_input) - 1] == ')') {
+        modifiable_input[strlen(modifiable_input) - 1] = '\0';  // Supprime la parenthèse fermante
+        char *variable = modifiable_input + 6;  // Pointeur vers le nom de la variable
+        read(variable);
         printf("\n");
+        free(modifiable_input);  // Libère la copie avant de retourner
         return;
     }
 
     char calcul[50];
-    strcpy(calcul, input);
+    strcpy(calcul, modifiable_input);  // Copie modifiable_input dans calcul
 
     char *equal_sign = strstr(calcul, "=");
     char *operation = NULL;
@@ -67,7 +72,22 @@ void interpret(const char* input) {
         operation = calcul;
     }
 
+    // Tokenization de l'opération
     Token *head = lexer(operation);
+
+    // Remplacer les variables par leurs valeurs
+    Token *current = head;
+    while (current != NULL) {
+        if (current->type == TOKEN_VAR) {
+            // Remplace le nom de la variable par sa valeur
+            current->my_token.number = get_val_variable(variables, variable_count, current->my_token.var_name);
+            printf("Replaced variable %s with value %d\n", current->my_token.var_name, current->my_token.number);  // Débogage
+            current->type = NUMBER;  // Change le type en NUMBER pour l'évaluation
+        }
+        current = current->next;
+    }
+
+    // Évaluer l'expression
     int result = parser(head);
 
     if (variable) {
@@ -78,9 +98,12 @@ void interpret(const char* input) {
         printf("Result = %d\n", result);
     }
 
+    // Libération des tokens
     while (head != NULL) {
         Token *next = head->next;
         free(head);
         head = next;
     }
+
+    free(modifiable_input);  // Libère la copie de `input` après utilisation
 }

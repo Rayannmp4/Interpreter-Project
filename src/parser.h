@@ -101,18 +101,31 @@ Node * buildAST ( Token * operation) {
 
 int evaluateAST(Node* root) {
     if (!root) return 0;
-    if (root->left == NULL && root->right == NULL) return root->content.value;
+    if (root->left == NULL && root->right == NULL) {
+        printf("Evaluating leaf node: %d\n", root->content.value);
+        return root->content.value;
+    }
 
     int leftValue = evaluateAST(root->left);
     int rightValue = evaluateAST(root->right);
 
+    int result = 0;
     switch (root->content.operator) {
-        case '+': return leftValue + rightValue;
-        case '-': return leftValue - rightValue;
-        case '*': return leftValue * rightValue;
-        case '/': return leftValue / rightValue;
+        case '+': 
+            result = leftValue + rightValue;
+            break;
+        case '-': 
+            result = leftValue - rightValue;
+            break;
+        case '*': 
+            result = leftValue * rightValue;
+            break;
+        case '/': 
+            result = rightValue != 0 ? leftValue / rightValue : 0;  // Gestion de la division par zéro
+            break;
     }
-    return 0;
+    printf("Evaluating %d %c %d = %d\n", leftValue, root->content.operator, rightValue, result);
+    return result;
 }
 
 void freeAST(Node* root) {
