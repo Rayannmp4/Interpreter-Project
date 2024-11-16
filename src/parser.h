@@ -13,6 +13,7 @@
 Node* add_operator_node ( char operator) {
     Node* node = (Node*) malloc (sizeof(Node));
     node->content.operator = operator ; 
+    node->isOperator = 1; 
     node->left = NULL;
     node->right = NULL;
     return node;
@@ -20,7 +21,8 @@ Node* add_operator_node ( char operator) {
 
 Node* add_value_node (int value) {
     Node* node = (Node*) malloc (sizeof(Node));
-    node->content.value = value ; 
+    node->content.value = value ;
+    node->isOperator = 0; 
     node->left = NULL;
     node->right = NULL;
     return node;
@@ -144,9 +146,38 @@ void freeAST(Node* root) {
 }
 
 
+void printAST(Node *node, int niveau) {
+    if (node != NULL) {
+        
+        if ( niveau == 0 ) {
+            printf(" (AST) \n");
+        }
+
+        for (int i = 0 ; i < niveau ; i ++) {
+            printf("   ");
+        }
+
+        // afficher le contenu du noeud  
+        if (node->isOperator) {
+            printf("N%d |_ %c \n", niveau, node->content.operator);
+        } else {
+            printf("N%d |_ %d \n", niveau, node->content.value);
+        }
+
+        // Afficher le sous-arbre gauche
+        printAST(node->left, niveau + 1);
+
+        // Afficher le sous-arbre droit
+        printAST(node->right, niveau + 1);
+    }
+}
+
+
+
 int parser (Token * operation ) {
    Node * AST = buildAST(operation); 
    int result = evaluateAST(AST);
+   printAST(AST, 0);
    freeAST (AST); 
    return result ; 
 }
