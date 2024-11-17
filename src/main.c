@@ -16,7 +16,7 @@ void interpret_file(const char *filename) {
     char line[256];
     while (fgets(line, sizeof(line), file)) {
         line[strcspn(line, "\n")] = '\0';  // Supprime le caractère '\n' de la fin de la ligne
-        interpret(line);  // Interpréter chaque ligne lue
+        interpret(line, false);  // Interpréter chaque ligne lue
     }
 
     fclose(file);  // Fermer le fichier après la lecture
@@ -43,8 +43,10 @@ int main(int argc, char *argv[]) {
                 char *variable = input + 6;       // Pointeur vers le nom de la variable
                 read(variable);                   // Appeler la fonction read pour afficher la valeur
                 printf("\n");
+            } else if ( strncmp (input, "while", 5) == 0 || strncmp (input, "for", 3) == 0) {
+                interpret(input, true); 
             } else {
-                interpret(input);  // Interpréter l'entrée utilisateur
+                interpret(input, false);  // Interpréter l'entrée utilisateur
             }
         }
     }

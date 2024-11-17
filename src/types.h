@@ -6,7 +6,8 @@ typedef enum {
    OPERATOR , 
    OPEN_BRACKET , 
    TOKEN_VAR, 
-   CLOSE_BRACKET  
+   CLOSE_BRACKET, 
+   KEY_WORD, 
 } char_type ;
 
 typedef struct Token Token ; 
@@ -42,5 +43,21 @@ typedef struct Node{
    struct Node * left;
    struct Node * right;
 } Node;
+
+typedef enum {
+   SUP , 
+   INF , 
+   EGA , 
+   DIFF, 
+   SUP_EGA, 
+   INF_EGA, 
+} Comp_type ;
+
+// While conditions 
+typedef struct {
+   char * var ; 
+   Comp_type comp;
+   int value ; 
+} Condition;
 
 #endif
