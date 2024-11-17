@@ -12,7 +12,7 @@ int variable_count = 0;
 int get_val_variable(Variable *variables, int count, const char* name) {
     for (int i = 0; i < count; i++) {
         if (strcmp(variables[i].name, name) == 0) {
-            printf("Retrieved value for %s: %d\n", name, variables[i].value);  // Message de débogage
+            printf("Retrieved value for %s: %d\n", name, variables[i].value); 
             return variables[i].value;
         }
     }
@@ -32,24 +32,24 @@ void set_val_variable(Variable *variables, int *count, const char *name, int val
     strcpy(variables[*count].name, name);
     variables[*count].value = value;
     (*count)++;
-    save(name, value);  // Sauvegarde de la variable
+    save(name, value);  
 }
 
 void interpret(const char* input) {
     // Créez une copie modifiable de `input`
-    char *modifiable_input = strdup(input);  // Copie modifiable de `input`
+    char *modifiable_input = strdup(input);
 
     if (strncmp(modifiable_input, "print(", 6) == 0 && modifiable_input[strlen(modifiable_input) - 1] == ')') {
         modifiable_input[strlen(modifiable_input) - 1] = '\0';  // Supprime la parenthèse fermante
         char *variable = modifiable_input + 6;  // Pointeur vers le nom de la variable
         read(variable);
         printf("\n");
-        free(modifiable_input);  // Libère la copie avant de retourner
+        free(modifiable_input);  
         return;
     }
 
     char calcul[50];
-    strcpy(calcul, modifiable_input);  // Copie modifiable_input dans calcul
+    strcpy(calcul, modifiable_input);  
 
     char *equal_sign = strstr(calcul, "=");
     char *operation = NULL;
@@ -57,6 +57,11 @@ void interpret(const char* input) {
 
     if (equal_sign) {
         variable = malloc(sizeof(char) * 20);
+
+        if (variable == NULL) {
+            printf("Error: memory allocation failed !\n");
+            exit(EXIT_FAILURE);
+        }
         variable[0] = '\0';
         int i = 0;
         while (calcul[i] == ' ') i++;
@@ -75,19 +80,18 @@ void interpret(const char* input) {
     // Tokenization de l'opération
     Token *head = lexer(operation);
 
-    // Remplacer les variables par leurs valeurs
+    
     Token *current = head;
     while (current != NULL) {
         if (current->type == TOKEN_VAR) {
-            // Remplace le nom de la variable par sa valeur
+            
             current->my_token.number = get_val_variable(variables, variable_count, current->my_token.var_name);
-            printf("Replaced variable %s with value %d\n", current->my_token.var_name, current->my_token.number);  // Débogage
-            current->type = NUMBER;  // Change le type en NUMBER pour l'évaluation
+            printf("Replaced variable %s with value %d\n", current->my_token.var_name, current->my_token.number);  
+            current->type = NUMBER;  
         }
         current = current->next;
     }
 
-    // Évaluer l'expression
     int result = parser(head);
 
     if (variable) {
@@ -105,5 +109,5 @@ void interpret(const char* input) {
         head = next;
     }
 
-    free(modifiable_input);  // Libère la copie de `input` après utilisation
+    free(modifiable_input);  
 }

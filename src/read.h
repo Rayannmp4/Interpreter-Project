@@ -1,6 +1,6 @@
 #ifndef SRC_READ_H
 #define SRC_READ_H
 
-void read(const char* variable);  // Déclaration de la fonction
+void read(const char* variable);  
 
-#endif // SRC_READ_H
+#endif

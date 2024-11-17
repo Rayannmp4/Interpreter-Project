@@ -7,7 +7,7 @@
 
 // Fonction pour interpréter les instructions d'un fichier
 void interpret_file(const char *filename) {
-    FILE *file = fopen(filename, "r");  // Ouvrir le fichier en mode lecture
+    FILE *file = fopen(filename, "r");  
     if (file == NULL) {
         printf("Could not open file %s\n", filename);
         return;
@@ -16,15 +16,15 @@ void interpret_file(const char *filename) {
     char line[256];
     while (fgets(line, sizeof(line), file)) {
         line[strcspn(line, "\n")] = '\0';  // Supprime le caractère '\n' de la fin de la ligne
-        interpret(line);  // Interpréter chaque ligne lue
+        interpret(line);  
     }
 
-    fclose(file);  // Fermer le fichier après la lecture
+    fclose(file); 
 }
 
 int main(int argc, char *argv[]) {
     if (argc == 2) {
-        // Si un argument est passé, interpréter les instructions du fichier
+        
         interpret_file(argv[1]);
     } else {
         // Mode interactif si aucun fichier n'est fourni en argument
@@ -40,11 +40,11 @@ int main(int argc, char *argv[]) {
 
             if (strncmp(input, "print(", 6) == 0 && input[strlen(input) - 1] == ')') {
                 input[strlen(input) - 1] = '\0';  // Supprime la parenthèse fermante
-                char *variable = input + 6;       // Pointeur vers le nom de la variable
-                read(variable);                   // Appeler la fonction read pour afficher la valeur
+                char *variable = input + 6;       
+                read(variable);                   
                 printf("\n");
             } else {
-                interpret(input);  // Interpréter l'entrée utilisateur
+                interpret(input);  
             }
         }
     }

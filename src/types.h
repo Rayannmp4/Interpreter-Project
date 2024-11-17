@@ -38,6 +38,7 @@ typedef struct Node{
    char operator;
    int value; 
    } content;
+   int isOperator; 
    struct Node * left;
    struct Node * right;
 } Node;

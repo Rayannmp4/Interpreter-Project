@@ -12,7 +12,14 @@
 
 Node* add_operator_node ( char operator) {
     Node* node = (Node*) malloc (sizeof(Node));
+
+    if (node == NULL) {
+        printf("Error: memory allocation failed !\n");
+        exit(EXIT_FAILURE);
+    }
+
     node->content.operator = operator ; 
+    node->isOperator = 1; 
     node->left = NULL;
     node->right = NULL;
     return node;
@@ -20,7 +27,13 @@ Node* add_operator_node ( char operator) {
 
 Node* add_value_node (int value) {
     Node* node = (Node*) malloc (sizeof(Node));
-    node->content.value = value ; 
+
+    if (node == NULL) {
+        printf("Error: memory allocation failed !\n");
+        exit(EXIT_FAILURE);
+    }
+    node->content.value = value ;
+    node->isOperator = 0; 
     node->left = NULL;
     node->right = NULL;
     return node;
@@ -68,6 +81,7 @@ Node * buildAST ( Token * operation) {
         if (operation->type == NUMBER || operation->type == TOKEN_VAR ) {
             // on crée un noeud pour nombre 
             Node * valueNode = add_value_node (operation->my_token.number);
+
             // on l'ajoute dans la pile des nombres
             pushNode(valueNode);
         } else if (operation->type == OPERATOR) {
@@ -88,8 +102,7 @@ Node * buildAST ( Token * operation) {
         }
         operation = operation->next ; 
     }
-    
-    // continuer avec les opérateurs restants 
+
     while(opTop >= 0) {
         add_sub_tree();
     }
@@ -120,15 +133,16 @@ int evaluateAST(Node* root) {
             result = leftValue * rightValue;
             break;
         case '/': 
-            result = rightValue != 0 ? leftValue / rightValue : 0;  
+            result = rightValue != 0 ? leftValue / rightValue : 0;  // Gestion de la division par zéro
             break;
     }
+    printf("Result %d %c %d = %d\n", leftValue, root->content.operator, rightValue, result);
     return result;
 }
 
 void freeAST(Node* root) {
     if (root == NULL) {
-        return; // Rien à libérer si l'arbre est vide
+        return; 
     }
 
     // Libérer les sous-arbres gauche et droit
@@ -142,9 +156,38 @@ void freeAST(Node* root) {
 }
 
 
+void printAST(Node *node, int niveau) {
+    if (node != NULL) {
+        
+        if ( niveau == 0 ) {
+            printf(" (AST) \n");
+        }
+
+        for (int i = 0 ; i < niveau ; i ++) {
+            printf("   ");
+        }
+
+        // afficher le contenu du noeud  
+        if (node->isOperator) {
+            printf("N%d |_ %c \n", niveau, node->content.operator);
+        } else {
+            printf("N%d |_ %d \n", niveau, node->content.value);
+        }
+
+        // Afficher le sous-arbre gauche
+        printAST(node->left, niveau + 1);
+
+        // Afficher le sous-arbre droit
+        printAST(node->right, niveau + 1);
+    }
+}
+
+
+
 int parser (Token * operation ) {
    Node * AST = buildAST(operation); 
    int result = evaluateAST(AST);
+   printAST(AST, 0);
    freeAST (AST); 
    return result ; 
 }

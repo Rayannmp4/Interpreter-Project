@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-void save(const char* variable, int nb) {  // Changer char* en const char*
+void save(const char* variable, int nb) {  
     FILE *f = fopen("data.txt", "a+");
     if (f == NULL) {
         printf("Error opening file data.txt\n");
@@ -15,7 +15,7 @@ void save(const char* variable, int nb) {  // Changer char* en const char*
 
     char c;
     rewind(f);
-    while ((c = fgetc(f)) != EOF) {  // Correction : Assurez-vous d'initialiser 'c' dans la boucle
+    while ((c = fgetc(f)) != EOF) { 
         int i = 0;
         while (c == variable[i]) {
             if (variable[i + 1] == '\0') {
@@ -38,4 +38,4 @@ void save(const char* variable, int nb) {  // Changer char* en const char*
     fclose(f);
 }
 
-#endif // SRC_SAVE_H
+#endif
