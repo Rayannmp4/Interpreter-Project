@@ -102,7 +102,6 @@ Node * buildAST ( Token * operation) {
 int evaluateAST(Node* root) {
     if (!root) return 0;
     if (root->left == NULL && root->right == NULL) {
-        printf("Evaluating leaf node: %d\n", root->content.value);
         return root->content.value;
     }
 
@@ -121,10 +120,9 @@ int evaluateAST(Node* root) {
             result = leftValue * rightValue;
             break;
         case '/': 
-            result = rightValue != 0 ? leftValue / rightValue : 0;  // Gestion de la division par zéro
+            result = rightValue != 0 ? leftValue / rightValue : 0;  
             break;
     }
-    printf("Evaluating %d %c %d = %d\n", leftValue, root->content.operator, rightValue, result);
     return result;
 }
 
