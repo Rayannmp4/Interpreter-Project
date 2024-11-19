@@ -35,7 +35,7 @@ void set_val_variable(Variable *variables, int *count, const char *name, int val
     save(name, value);  
 }
 
-void interpret(const char* input) {
+void interpret(const char* input) { 
     // Créez une copie modifiable de `input`
     char *modifiable_input = strdup(input);
 
@@ -58,10 +58,10 @@ void interpret(const char* input) {
     if (equal_sign) {
         variable = malloc(sizeof(char) * 20);
 
-        if (variable == NULL) {
+    if (variable == NULL) {
             printf("Error: memory allocation failed !\n");
             exit(EXIT_FAILURE);
-        }
+    }
         variable[0] = '\0';
         int i = 0;
         while (calcul[i] == ' ') i++;
